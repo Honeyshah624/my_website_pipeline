@@ -6,7 +6,7 @@ pipeline {
         GIT_BRANCH = 'main'
         IMAGE_NAME = 'honeyshah062/modernchair'
         IMAGE_TAG = 'latest'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id'
         K8S_NAMESPACE = 'app'
     }
 
