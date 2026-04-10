@@ -12,7 +12,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+                sh '''
+                    docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                '''
             }
         }
 
@@ -26,17 +28,27 @@ pipeline {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push $IMAGE_NAME:$IMAGE_TAG
-                        sleep 8
                     '''
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Load Image into Minikube') {
             steps {
                 sh '''
-                    kubectl apply -f my-nginx-app.yaml -n $K8S_NAMESPACE
+                    minikube image load $IMAGE_NAME:$IMAGE_TAG
                 '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    sh '''
+                        kubectl apply -f my-nginx-app.yaml --validate=false
+                        kubectl rollout status deployment/my-nginx-app -n $K8S_NAMESPACE
+                    '''
+                }
             }
         }
 
@@ -53,9 +65,18 @@ pipeline {
                     kubectl get ingress -n $K8S_NAMESPACE -o wide
 
                     echo "Minikube IP:"
-                    minikube ip || true
+                    minikube ip
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed. Check console output.'
         }
     }
 }
