@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO = 'https://github.com/Honeyshah624/modernchair.git'
+        GIT_REPO = 'https://github.com/Honeyshah624/my_website_pipeline.git'
         GIT_BRANCH = 'main'
-        IMAGE_NAME = 'yourdockerhubusername/modernchair'
+        IMAGE_NAME = 'honeyshah062/modernchair'
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
         K8S_NAMESPACE = 'app'
