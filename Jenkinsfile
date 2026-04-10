@@ -34,8 +34,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    kubectl apply -f my-nginx-app.yaml --validate=false
-                    kubectl rollout status deployment/my-nginx-app -n $K8S_NAMESPACE
+                    kubectl apply -f my-nginx-app.yaml -n $K8S_NAMESPACE
                 '''
             }
         }
