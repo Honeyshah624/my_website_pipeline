@@ -16,7 +16,7 @@ spec:
       containers:
         - name: my-nginx-container
           image: honeyshah062/modernchair:latest
-          imagePullPolicy: IfNotPresent
+         
           ports:
             - containerPort: 80
 
