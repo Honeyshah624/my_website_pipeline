@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO = 'https://github.com/Honeyshah624/my_website_pipeline.git'
-        GIT_BRANCH = 'main'
         IMAGE_NAME = 'honeyshah062/modernchair'
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id'
@@ -11,12 +9,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Clone Code') {
-            steps {
-                git branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
@@ -43,7 +35,6 @@ pipeline {
             steps {
                 sh '''
                     kubectl apply -f my-nginx-app.yaml --validate=false
-                    kubectl rollout restart deployment/my-nginx-app -n $K8S_NAMESPACE
                     kubectl rollout status deployment/my-nginx-app -n $K8S_NAMESPACE
                 '''
             }
@@ -52,9 +43,16 @@ pipeline {
         stage('Print Ingress IP') {
             steps {
                 sh '''
+                    echo "Pods:"
                     kubectl get pods -n $K8S_NAMESPACE
+
+                    echo "Services:"
                     kubectl get svc -n $K8S_NAMESPACE
+
+                    echo "Ingress:"
                     kubectl get ingress -n $K8S_NAMESPACE -o wide
+
+                    echo "Minikube IP:"
                     minikube ip || true
                 '''
             }
