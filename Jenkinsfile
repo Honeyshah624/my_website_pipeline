@@ -45,7 +45,7 @@ pipeline {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     sh '''
-                        kubectl apply -f my-nginx-app.yaml -n $K8S_NAMESPACE
+                        kubectl apply -f my-nginx-app.yaml --validate=false
                         sleep 5
                     '''
                 }
