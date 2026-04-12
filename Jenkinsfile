@@ -15,6 +15,8 @@ pipeline {
         stage('Check Cluster Access') {
             steps {
                 sh '''
+                    echo "HOME=$HOME"
+                    echo "KUBECONFIG=$KUBECONFIG"
                     minikube status
                     kubectl config current-context
                     kubectl get nodes
@@ -67,9 +69,16 @@ pipeline {
         stage('Print Ingress IP') {
             steps {
                 sh '''
+                    echo "Pods:"
                     kubectl get pods -n $K8S_NAMESPACE
+
+                    echo "Services:"
                     kubectl get svc -n $K8S_NAMESPACE
+
+                    echo "Ingress:"
                     kubectl get ingress -n $K8S_NAMESPACE -o wide
+
+                    echo "Minikube IP:"
                     minikube ip
                 '''
             }
