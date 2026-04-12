@@ -6,11 +6,21 @@ pipeline {
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id'
         K8S_NAMESPACE = 'app'
-        HOME = '/var/lib/jenkins'
-        KUBECONFIG = '/var/lib/jenkins/.kube/config'
+        HOME = '/home/einfochips'
+        KUBECONFIG = '/home/einfochips/.kube/config'
     }
 
     stages {
+
+        stage('Check Cluster Access') {
+            steps {
+                sh '''
+                    minikube status
+                    kubectl config current-context
+                    kubectl get nodes
+                '''
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -57,16 +67,9 @@ pipeline {
         stage('Print Ingress IP') {
             steps {
                 sh '''
-                    echo "Pods:"
                     kubectl get pods -n $K8S_NAMESPACE
-
-                    echo "Services:"
                     kubectl get svc -n $K8S_NAMESPACE
-
-                    echo "Ingress:"
                     kubectl get ingress -n $K8S_NAMESPACE -o wide
-
-                    echo "Minikube IP:"
                     minikube ip
                 '''
             }
