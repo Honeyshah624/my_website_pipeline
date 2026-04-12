@@ -6,23 +6,11 @@ pipeline {
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id'
         K8S_NAMESPACE = 'app'
-        HOME = '/home/einfochips'
-        KUBECONFIG = '/home/einfochips/.kube/config'
+        HOME = '/var/lib/jenkins'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
     stages {
-
-        stage('Check Cluster Access') {
-            steps {
-                sh '''
-                    echo "HOME=$HOME"
-                    echo "KUBECONFIG=$KUBECONFIG"
-                    minikube status
-                    kubectl config current-context
-                    kubectl get nodes
-                '''
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
