@@ -6,6 +6,8 @@ pipeline {
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id'
         K8S_NAMESPACE = 'app'
+        HOME = '/var/lib/jenkins'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
     stages {
@@ -43,10 +45,10 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                timeout(time: 2, unit: 'MINUTES') {
+                timeout(time: 3, unit: 'MINUTES') {
                     sh '''
                         kubectl apply -f my-nginx-app.yaml --validate=false
-                        sleep 5
+                        kubectl rollout status deployment/my-nginx-app -n $K8S_NAMESPACE
                     '''
                 }
             }

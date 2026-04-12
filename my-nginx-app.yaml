@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +22,7 @@ spec:
       containers:
         - name: my-nginx-container
           image: honeyshah062/modernchair:latest
-         
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
 
